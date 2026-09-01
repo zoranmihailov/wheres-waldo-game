@@ -1,0 +1,40 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model Image {
+  id         String      @id @default(uuid())
+  title      String
+  imageUrl   String
+  characters Character[]
+  scores     Score[]
+}
+
+model Character {
+  id       String @id @default(uuid())
+  name     String
+  imageUrl String
+
+  xMin Float
+  xMax Float
+  yMin Float
+  yMax Float
+
+  imageId String
+  image   Image  @relation(fields: [imageId], references: [id], onDelete: Cascade)
+}
+
+model Score {
+  id            String   @id @default(uuid())
+  username      String
+  timeInSeconds Float
+  createdAt     DateTime @default(now())
+
+  imageId String
+  image   Image  @relation(fields: [imageId], references: [id], onDelete: Cascade)
+}
